@@ -9,6 +9,7 @@ use OCA\FlzOrganization\Calendar\CalendarContextSettingsService;
 use OCA\FlzOrganization\Calendar\HolidayCalendarService;
 use OCA\FlzOrganization\Controller\AdminController;
 use OCA\FlzOrganization\Permission\PermissionProvider;
+use OCA\FlzOrganization\Privacy\PersonalDataProvider;
 use OCA\FlzOrganization\Service\OrganizationAdminService;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
@@ -27,6 +28,11 @@ final class Application extends App implements IBootstrap {
     public function register(IRegistrationContext $context): void {
         // Register permission provider for the app
         $context->registerPermissionProvider(PermissionProvider::class);
+
+        // Register personal data provider for the app
+        // Note: This app stores NO personal data. The provider exists to
+        // explicitly document this fact and satisfy the privacy provider contract.
+        $context->registerPersonalDataProvider(PersonalDataProvider::class);
 
         // Register service aliases for DI container
         $context->registerServiceAlias(
