@@ -10,6 +10,7 @@ $tests = [
     __DIR__ . '/Contract/PublicApiV1ContractTest.php',
     __DIR__ . '/Service/OrganizationRuntimeTest.php',
     __DIR__ . '/Service/CalendarRuntimeTest.php',
+    __DIR__ . '/Service/OrganizationAdminServiceTest.php',
 ];
 
 foreach ($tests as $test) {
