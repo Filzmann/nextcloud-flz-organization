@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use OCA\FlzOrganization\AppInfo\Application;
+use OCA\FlzOrganization\BackgroundJob\RefreshHolidayCalendarJob;
 use OCA\FlzOrganization\Calendar\CalendarContextSettingsService;
 use OCA\FlzOrganization\Calendar\HolidayCalendarCacheStore;
 use OCA\FlzOrganization\Calendar\HolidayCalendarService;
@@ -10,7 +10,6 @@ use OCA\FlzOrganization\Calendar\OpenHolidaysClient;
 use OCA\FlzOrganization\Controller\AdminController;
 use OCA\FlzOrganization\Organization\AuthorizationSettingsService;
 use OCA\FlzOrganization\Organization\OrganizationSettingsService;
-use OCA\FlzOrganization\Service\OrganizationAdminService;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\Http\Client\IClientService;
 use OCP\IAppConfig;
@@ -19,24 +18,21 @@ use Psr\Log\LoggerInterface;
 
 // Service definitions for the DI container
 return [
-    // App config
+    // Server container services (pass-through)
     IAppConfig::class => function ($c) {
         return $c->getServerContainer()->get(IAppConfig::class);
     },
-
-    // Time factory
     ITimeFactory::class => function ($c) {
         return $c->getServerContainer()->get(ITimeFactory::class);
     },
-
-    // Client service
     IClientService::class => function ($c) {
         return $c->getServerContainer()->get(IClientService::class);
     },
-
-    // Logger
     LoggerInterface::class => function ($c) {
         return $c->getServerContainer()->get(LoggerInterface::class);
+    },
+    IRequest::class => function ($c) {
+        return $c->getServerContainer()->get(IRequest::class);
     },
 
     // App-specific services
@@ -81,19 +77,28 @@ return [
         );
     },
 
-    OrganizationAdminService::class => function ($c) {
-        return new OrganizationAdminService(
+    // Background job for daily holiday calendar refresh
+    RefreshHolidayCalendarJob::class => function ($c) {
+        return new RefreshHolidayCalendarJob(
+            $c->get(ITimeFactory::class),
+            $c->get(CalendarContextSettingsService::class),
+            $c->get(HolidayCalendarService::class),
+        );
+    },
+
+    // Admin services and controllers
+    'OrganizationAdminService' => function ($c) {
+        return new \OCA\FlzOrganization\Service\OrganizationAdminService(
             $c->get(OrganizationSettingsService::class),
             $c->get(CalendarContextSettingsService::class),
             $c->get(AuthorizationSettingsService::class),
         );
     },
 
-    // Register AdminController
     AdminController::class => function ($c) {
         return new AdminController(
             $c->get(IRequest::class),
-            $c->get(OrganizationAdminService::class),
+            $c->get('OrganizationAdminService'),
         );
     },
 ];

@@ -4,24 +4,32 @@ declare(strict_types=1);
 
 namespace OCA\FlzOrganization\AppInfo;
 
+use OCA\FlzOrganization\BackgroundJob\RefreshHolidayCalendarJob;
+use OCA\FlzOrganization\Calendar\CalendarContextSettingsService;
+use OCA\FlzOrganization\Calendar\HolidayCalendarService;
 use OCA\FlzOrganization\Controller\AdminController;
+use OCA\FlzOrganization\Permission\PermissionProvider;
 use OCA\FlzOrganization\Service\OrganizationAdminService;
 use OCP\AppFramework\App;
+use OCP\AppFramework\Bootstrap\IBootContext;
+use OCP\AppFramework\Bootstrap\IBootstrap;
+use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\IAppContainer;
+use OCP\AppFramework\Utility\ITimeFactory;
 
-final class Application extends App {
+final class Application extends App implements IBootstrap {
     public const APP_ID = 'flz_organization';
 
-    public function __construct() {
-        parent::__construct(self::APP_ID);
+    public function __construct(array $urlParams = []) {
+        parent::__construct(self::APP_ID, $urlParams);
     }
 
-    /**
-     * Register services in the DI container.
-     */
-    public function registerServices(IAppContainer $container): void {
-        // Register AdminService with its dependencies
-        $container->registerService(
+    public function register(IRegistrationContext $context): void {
+        // Register permission provider for the app
+        $context->registerPermissionProvider(PermissionProvider::class);
+
+        // Register service aliases for DI container
+        $context->registerServiceAlias(
             OrganizationAdminService::class,
             function (IAppContainer $c) {
                 return new OrganizationAdminService(
@@ -31,16 +39,9 @@ final class Application extends App {
                 );
             }
         );
+    }
 
-        // Register AdminController
-        $container->registerService(
-            AdminController::class,
-            function (IAppContainer $c) {
-                return new AdminController(
-                    $c->get('Request'),
-                    $c->get(OrganizationAdminService::class),
-                );
-            }
-        );
+    public function boot(IBootContext $context): void {
+        // No runtime bootstrap required
     }
 }
