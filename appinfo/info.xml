@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
+    <id>flz_organization</id>
+    <name>Organization Services</name>
+    <name lang="de">Organisationsdienste</name>
+    <summary>Versioned organization, calendar and integration contracts for Nextcloud apps.</summary>
+    <summary lang="de">Versionierte Organisations-, Kalender- und Integrationsverträge für Nextcloud-Apps.</summary>
+    <description>Owns shared organization configuration, calendar context, holiday cache and public cross-app events without depending on LocalBase.</description>
+    <description lang="de">Besitzt gemeinsame Organisationskonfiguration, Kalenderkontext, Feiertagscache und öffentliche Cross-App-Events ohne LocalBase-Abhängigkeit.</description>
+    <version>0.1.0-dev.1</version>
+    <licence>agpl</licence>
+    <author>Filzmann Software</author>
+    <namespace>FlzOrganization</namespace>
+    <category>organization</category>
+    <dependencies>
+        <php min-version="8.3"/>
+        <nextcloud min-version="33" max-version="35"/>
+    </dependencies>
+    <background-jobs>
+        <job>OCA\FlzOrganization\BackgroundJob\RefreshHolidayCalendarJob</job>
+    </background-jobs>
+</info>
+
