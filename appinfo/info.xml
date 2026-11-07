@@ -8,7 +8,7 @@
     <summary lang="de">Versionierte Organisations-, Kalender- und Integrationsverträge für Nextcloud-Apps.</summary>
     <description>Owns shared organization configuration, calendar context, holiday cache and public cross-app events without depending on LocalBase.</description>
     <description lang="de">Besitzt gemeinsame Organisationskonfiguration, Kalenderkontext, Feiertagscache und öffentliche Cross-App-Events ohne LocalBase-Abhängigkeit.</description>
-    <version>0.1.0-dev.1</version>
+    <version>0.1.0-dev.2</version>
     <licence>agpl</licence>
     <author>Filzmann Software</author>
     <namespace>FlzOrganization</namespace>
@@ -20,5 +20,19 @@
     <background-jobs>
         <job>OCA\FlzOrganization\BackgroundJob\RefreshHolidayCalendarJob</job>
     </background-jobs>
+    <navigations>
+        <admin>
+            <name>Organization Services</name>
+            <name lang="de">Organisationsdienste</name>
+            <route>flz_organization.admin.index</route>
+            <route-params></route-params>
+        </admin>
+    </navigations>
+    <scripts>
+        <admin>js/admin.js</admin>
+    </scripts>
+    <styles>
+        <admin>css/admin.css</admin>
+    </styles>
 </info>
 
