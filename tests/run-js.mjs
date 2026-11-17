@@ -15,3 +15,8 @@ if (fs.existsSync(runtimeJs)) {
 }
 
 process.stdout.write('OK (no LocalBase browser runtime dependency)\n')
+
+// Verhaltenstests (Charakterisierungstests) für js/admin.js: lädt den
+// unveränderten Produktivcode per node:vm und löst die registrierten
+// Handler über echte Events aus.
+await import('./js-admin-behavior.test.mjs')

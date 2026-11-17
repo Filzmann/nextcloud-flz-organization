@@ -46,11 +46,13 @@ lists. Event types may transiently carry UIDs only when instantiated by their
 data-owning consumers/providers; this app registers no collector. Therefore a
 PersonalDataProvider and processing catalog are currently not applicable.
 
-The app initially exposes no user/admin endpoint and owns no app-local actor
-permission, so PermissionProvider is currently not applicable. These decisions
-must be reevaluated with every new UI, endpoint, persisted personal value,
-membership source or permission scope. Unknown coverage is never described as
-complete.
+The app exposes a native Nextcloud-admin-only configuration surface. Its read
+and write endpoints retain the framework's default administrator check; writes
+also retain the default CSRF check. It owns no app-local actor permission, and
+its empty PermissionProvider documents that no user-grantable app scope or
+role mapping exists. These decisions must be reevaluated with every new user
+endpoint, persisted personal value, membership source or permission scope.
+Unknown coverage is never described as complete.
 
 ## Tests and completion
 
@@ -69,11 +71,14 @@ DDEV, Docker, Nextcloud, `occ`, installation and removal commands require a
 concrete request or explicit approval. No commit, push, release or deployment
 without Simon's explicit authorization.
 
-## Documentation responsibilities
+## Dokumentenverantwortung
 
-- `README.md`: current usable scope, installation/operation, tests, index.
-- `ROADMAP.md`: open, deferred or approval-gated work only.
-- `CHANGELOG.md`: completed or release-prepared changes.
+- `README.md` ist für den aktuellen nutzbaren Umfang, Installation/Betrieb,
+  Tests und den Dokumentationsindex verantwortlich.
+- `ROADMAP.md` enthält ausschließlich offene, zurückgestellte oder
+  freigabepflichtige Arbeit.
+- `CHANGELOG.md` dokumentiert abgeschlossene oder für einen Release
+  vorbereitete Änderungen.
 - `docs/architecture.md`: current domain, data and integration contracts.
 - `docs/public-api-v1.md`: public V1 consumer contract.
 - `docs/manual-acceptance.md`: repeatable unfilled acceptance instruction.

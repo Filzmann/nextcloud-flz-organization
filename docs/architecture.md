@@ -61,13 +61,15 @@ consumer or provider creates them; this app registers no listener that
 collects or persists such values. The data-owning listener app remains
 responsible for its own processing catalog and privacy provider.
 
-No `PermissionProvider` is applicable to the initial scope because the app
-has no user-facing or administrative endpoint and grants no app-local actor
-permission. Its read-only authorization service supplies inputs to consumer
-apps; those consumers remain responsible for server-side access decisions
-and their own permission providers. Both decisions must be reevaluated when
-the app gains an admin UI, user endpoints, membership data, or personal
-configuration.
+The administration surface uses Nextcloud's native administrator check on
+every route and keeps the framework's default CSRF check on writes. Its empty
+`PermissionProvider` documents that the app grants no user-configurable actor
+scope or role mapping; native administrator authentication remains the sole
+configuration-access boundary. The read-only authorization service supplies
+inputs to consumer apps, which remain responsible for their own server-side
+access decisions and permission providers. Privacy and permission-provider
+coverage must be reevaluated when the app gains user endpoints, membership
+data, personal configuration, or an app-local actor scope.
 
 ## Release and rollback
 

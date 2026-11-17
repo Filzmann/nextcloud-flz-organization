@@ -4,50 +4,31 @@ declare(strict_types=1);
 
 namespace OCA\FlzOrganization\AppInfo;
 
-use OCA\FlzOrganization\BackgroundJob\RefreshHolidayCalendarJob;
-use OCA\FlzOrganization\Calendar\CalendarContextSettingsService;
-use OCA\FlzOrganization\Calendar\HolidayCalendarService;
-use OCA\FlzOrganization\Controller\AdminController;
-use OCA\FlzOrganization\Permission\PermissionProvider;
-use OCA\FlzOrganization\Privacy\PersonalDataProvider;
-use OCA\FlzOrganization\Service\OrganizationAdminService;
+use OCA\FlzOrganization\Permission\PermissionProviderListener;
+use OCA\FlzPermissionMatrix\PublicApi\V1\RegisterPermissionProvidersEvent;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
-use OCP\AppFramework\IAppContainer;
-use OCP\AppFramework\Utility\ITimeFactory;
 
-final class Application extends App implements IBootstrap {
+final class Application extends App implements IBootstrap
+{
     public const APP_ID = 'flz_organization';
 
-    public function __construct(array $urlParams = []) {
+    public function __construct(array $urlParams = [])
+    {
         parent::__construct(self::APP_ID, $urlParams);
     }
 
-    public function register(IRegistrationContext $context): void {
-        // Register permission provider for the app
-        $context->registerPermissionProvider(PermissionProvider::class);
-
-        // Register personal data provider for the app
-        // Note: This app stores NO personal data. The provider exists to
-        // explicitly document this fact and satisfy the privacy provider contract.
-        $context->registerPersonalDataProvider(PersonalDataProvider::class);
-
-        // Register service aliases for DI container
-        $context->registerServiceAlias(
-            OrganizationAdminService::class,
-            function (IAppContainer $c) {
-                return new OrganizationAdminService(
-                    $c->get('OrganizationSettingsService'),
-                    $c->get('CalendarContextSettingsService'),
-                    $c->get('AuthorizationSettingsService'),
-                );
-            }
+    public function register(IRegistrationContext $context): void
+    {
+        $context->registerEventListener(
+            RegisterPermissionProvidersEvent::class,
+            PermissionProviderListener::class,
         );
     }
 
-    public function boot(IBootContext $context): void {
-        // No runtime bootstrap required
+    public function boot(IBootContext $context): void
+    {
     }
 }

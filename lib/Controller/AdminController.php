@@ -15,20 +15,23 @@ use OCP\IRequest;
  * Bietet CSRF-geschützte Endpunkte für die Konfiguration von:
  * - Organisationsdefinitionen (Rollen, Bereiche, Identitätsgruppen)
  * - Kalenderkontext (Land, Region, Zeitzone)
- * - Autorisierungseinstellungen
+ * - Lesestatus der Autorisierungseinstellungen
  */
-class AdminController extends Controller {
+class AdminController extends Controller
+{
     public function __construct(
         IRequest $request,
         private OrganizationAdminService $adminService,
-    ) {
+    )
+    {
         parent::__construct('flz_organization', $request);
     }
 
     /**
      * Zeigt die Admin-Übersichtsseite an.
      */
-    public function index(): TemplateResponse {
+    public function index(): TemplateResponse
+    {
         $status = $this->adminService->getConfigurationStatus();
         
         return new TemplateResponse(
@@ -44,7 +47,8 @@ class AdminController extends Controller {
     /**
      * Zeigt das Formular für die Organisationsdefinition an.
      */
-    public function organizationForm(): TemplateResponse {
+    public function organizationForm(): TemplateResponse
+    {
         $definition = $this->adminService->getOrganizationDefinition();
         
         return new TemplateResponse(
@@ -59,13 +63,13 @@ class AdminController extends Controller {
 
     /**
      * Speichert die Organisationsdefinition.
-     * 
-     * @NoAdminRequired
      */
-    public function saveOrganization(array $data): TemplateResponse {
+    public function saveOrganization(array $data): TemplateResponse
+    {
         $result = $this->adminService->saveOrganizationDefinition($data);
         
-        if (!$result['success']) {
+        if (!$result['success'])
+        {
             return new TemplateResponse(
                 'flz_organization',
                 'admin/organization-form',
@@ -91,7 +95,8 @@ class AdminController extends Controller {
     /**
      * Zeigt das Formular für den Kalenderkontext an.
      */
-    public function calendarForm(): TemplateResponse {
+    public function calendarForm(): TemplateResponse
+    {
         $context = $this->adminService->getCalendarContext();
         
         return new TemplateResponse(
@@ -106,13 +111,13 @@ class AdminController extends Controller {
 
     /**
      * Speichert den Kalenderkontext.
-     * 
-     * @NoAdminRequired
      */
-    public function saveCalendar(array $data): TemplateResponse {
+    public function saveCalendar(array $data): TemplateResponse
+    {
         $result = $this->adminService->saveCalendarContext($data);
         
-        if (!$result['success']) {
+        if (!$result['success'])
+        {
             return new TemplateResponse(
                 'flz_organization',
                 'admin/calendar-form',

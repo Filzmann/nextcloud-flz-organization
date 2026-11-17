@@ -2,109 +2,44 @@
 
 declare(strict_types=1);
 
-namespace OCA\FlzOrganization\Integration;
-
 use OCA\FlzOrganization\AppInfo\Application;
+use OCA\FlzOrganization\Permission\PermissionProviderListener;
+use OCA\FlzPermissionMatrix\PublicApi\V1\RegisterPermissionProvidersEvent;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
-use PHPUnit\Framework\TestCase;
 
-/**
- * Integration tests for application bootstrap and DI container.
- * 
- * Tests the complete application lifecycle: registration, boot, DI container,
- * background job registration, and permission provider registration.
- * 
- * @covers \OCA\FlzOrganization\AppInfo\Application
- */
-final class ApplicationIntegrationTest extends TestCase {
+$context = new class implements IRegistrationContext
+{
+    /** @var array<string, string> */
+    public array $aliases = [];
 
-    private Application $app;
+    /** @var array<string, string> */
+    public array $listeners = [];
 
-    protected function setUp(): void {
-        $this->app = new Application();
+    public function registerServiceAlias(string $alias, string $target): void
+    {
+        $this->aliases[$alias] = $target;
     }
 
-    public function testApplicationHasCorrectAppId(): void {
-        $reflection = new \ReflectionClass($this->app);
-        $appIdProperty = $reflection->getProperty('appName');
-        $appIdProperty->setAccessible(true);
-        
-        self::assertSame('flz_organization', $appIdProperty->getValue($this->app));
+    public function registerEventListener(string $event, string $listener, int $priority = 0): void
+    {
+        $this->listeners[$event] = $listener;
     }
+};
 
-    public function testApplicationImplementsIBootstrap(): void {
-        self::assertInstanceOf(
-            \OCP\AppFramework\Bootstrap\IBootstrap::class,
-            $this->app
-        );
-    }
+$application = new Application();
+$application->register($context);
 
-    public function testRegisterMethodExists(): void {
-        self::assertTrue(
-            method_exists($this->app, 'register'),
-            'Application should have a register method for IBootstrap interface'
-        );
-    }
-
-    public function testBootMethodExists(): void {
-        self::assertTrue(
-            method_exists($this->app, 'boot'),
-            'Application should have a boot method for IBootstrap interface'
-        );
-    }
-
-    /**
-     * Test that the application can be constructed with URL parameters.
-     */
-    public function testApplicationConstructionWithUrlParams(): void {
-        $appWithParams = new Application(['test' => 'value']);
-        
-        self::assertInstanceOf(Application::class, $appWithParams);
-    }
-
-    /**
-     * Test that register method accepts IRegistrationContext.
-     * This is a structural test to verify the interface contract.
-     */
-    public function testRegisterAcceptsRegistrationContext(): void {
-        // Create a mock registration context
-        $context = $this->createMock(IRegistrationContext::class);
-        
-        // The register method should accept the context
-        // We can't actually call it without a full Nextcloud container,
-        // but we can verify the method signature
-        $reflection = new \ReflectionClass($this->app);
-        $registerMethod = $reflection->getMethod('register');
-        $parameters = $registerMethod->getParameters();
-        
-        self::assertCount(1, $parameters, 'register should have exactly one parameter');
-        self::assertSame(
-            IRegistrationContext::class,
-            $parameters[0]->getType()?->getName(),
-            'First parameter should be IRegistrationContext'
-        );
-    }
-
-    /**
-     * Test that boot method accepts IBootContext.
-     */
-    public function testBootAcceptsBootContext(): void {
-        $reflection = new \ReflectionClass($this->app);
-        $bootMethod = $reflection->getMethod('boot');
-        $parameters = $bootMethod->getParameters();
-        
-        self::assertCount(1, $parameters, 'boot should have exactly one parameter');
-        self::assertSame(
-            \OCP\AppFramework\Bootstrap\IBootContext::class,
-            $parameters[0]->getType()?->getName(),
-            'First parameter should be IBootContext'
-        );
-    }
-
-    public function testApplicationExtendsBaseApp(): void {
-        self::assertInstanceOf(
-            \OCP\AppFramework\App::class,
-            $this->app
-        );
-    }
-}
+assertSame(
+    PermissionProviderListener::class,
+    $context->listeners[RegisterPermissionProvidersEvent::class] ?? null,
+    'The permission provider must be registered lazily through the supported Nextcloud event-listener bootstrap API.',
+);
+assertSame(
+    [],
+    $context->aliases,
+    'The application bootstrap must not register a service alias with a factory as its target.',
+);
+assertTrue(
+    !isset($context->listeners['OCA\\FlzDataProtection\\PublicApi\\V1\\RegisterPersonalDataProvidersEvent']),
+    'An app without app-owned personal data must not register a synthetic PersonalDataProvider.',
+);

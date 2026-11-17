@@ -67,15 +67,13 @@ else
     # This is not a hard failure as the job is declared in info.xml
 fi
 
-# Test 4: Provider Registration (structural test)
+# Test 4: Provider Registration
 echo ""
 echo "[4/9] Testing provider registration..."
-# We can't directly test provider registration via occ, but we can verify
-# the PermissionProvider class exists
-if ddev exec php -r "require_once '/var/www/html/custom_apps/flz_organization/lib/Permission/PermissionProvider.php'; echo class_exists('OCA\\FlzOrganization\\Permission\\PermissionProvider') ? '1' : '0';" 2>/dev/null | grep -q "1"; then
-    log_success "PermissionProvider class exists"
+if ddev exec php -r "require '/var/www/html/lib/base.php'; require '/var/www/html/custom_apps/flz_organization/tests/runtime/permission-provider.php';" 2>/dev/null; then
+    log_success "PermissionProvider registered through the V1 event contract"
 else
-    log_warning "PermissionProvider class check failed (may need app code reload)"
+    log_failure "PermissionProvider was not registered through the V1 event contract"
 fi
 
 # Test 5: Deactivation

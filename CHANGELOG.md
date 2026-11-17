@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+- Expanded the dependency-light PHP suite from eight to ten test files with
+  controller and background-job coverage (68/68 and 8/8 lines). The fresh PHP
+  measurement increased from 49.95% (476/953) to 67.79% (646/953); CI now
+  enforces the new threshold. Overall PHP, runtime, browser, and full
+  application coverage remain incomplete.
+- Added executable administration JavaScript behavior tests; the measured
+  `js/admin.js` line coverage is now 100.00% (51/51), enforced in CI. The
+  original 0.00% measurement remains documented as the starting point.
+- Added reproducible PHP/JavaScript coverage CI and initial measured regression
+  thresholds of 49.95% PHP and 0.00% JavaScript, with uncovered files included.
+- Instrumented both isolated bootstrap and main PHP tests through the existing
+  development-only runner and made the incomplete UI coverage explicit.
 - Created the standalone `flz_organization` Category-B runtime app.
 - Extended the public organization snapshot with validated identity groups,
   including the canonical `works_council_member` identity consumed by the
@@ -10,10 +22,16 @@
   context and holiday providers, and absence/conflict/capability events.
 - Added fail-closed AppConfig ownership, holiday refresh infrastructure, and
   dependency-light provider contract tests.
-- Added CSRF-protected administration surface for organization definition,
-  calendar context, and authorization settings configuration.
+- Added a CSRF-protected administration surface for organization definition
+  and calendar-context configuration, with read-only authorization status.
 - Added background job for daily holiday calendar cache refresh.
-- Added PermissionProvider and PersonalDataProvider for privacy compliance.
+- Added a lazy V1 PermissionProvider integration for the permission matrix;
+  the complete empty inventory documents that the app grants no app-owned
+  actor permissions.
+- Removed the synthetic PersonalDataProvider because the app owns no personal
+  values and the provider is therefore not applicable.
+- Replaced unsupported bootstrap registration calls and the invalid service
+  alias factory with supported Nextcloud event-listener registration.
 - Added comprehensive unit and integration tests for new components.
 - Added runtime matrix test documentation for DI, background-job, deactivation,
   removal, and reinstall scenarios.

@@ -12,7 +12,8 @@ The following matrix covers all required runtime scenarios per ROADMAP:
 | **DI Container** | Runtime | Access `/apps/flz_organization/admin` | Route resolves, returns login redirect | ✅ |
 | **Background Job** | Runtime | `occ backgroundjob:list` | RefreshHolidayCalendarJob appears | ⏳ |
 | **Background Job** | Runtime | `occ backgroundjob:execute flz_organization RefreshHolidayCalendarJob` | Job runs without errors | ⏳ |
-| **Provider Registration** | Runtime | `occ app:enable flz_organization` | PermissionProvider registered | ✅ |
+| **Provider Registration** | Local contract | `php tests/run.php` | PermissionProvider is registered lazily through the V1 event contract | ✅ |
+| **Provider Registration** | Runtime | Dispatch the V1 registry event with `flz_permission_matrix` active | PermissionProvider registered exactly once | ⏳ |
 | **Provider-Failure** | Runtime | Disable dependency | App remains stable, provider unavailable | ⏳ |
 | **Deactivation** | Runtime | `occ app:disable flz_organization` | App disables, no errors | ✅ |
 | **Removal** | Runtime | `occ app:remove flz_organization` | App removed, no errors | ⏳ |
@@ -93,8 +94,9 @@ occ app:enable flz_organization
 
 ### 9. Test Provider Failure Scenarios
 ```bash
-# Test with missing optional dependencies
-# (No special dependencies for flz_organization)
+# Test with the optional permission matrix disabled
+# Expected: the organization app remains usable; only its permission-inventory
+# integration is unavailable.
 
 # Test with corrupted AppConfig (simulate)
 # This should be handled gracefully by services

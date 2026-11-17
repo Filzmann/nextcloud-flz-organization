@@ -2,20 +2,25 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/stubs.php';
-require_once __DIR__ . '/bootstrap.php';
-require_once __DIR__ . '/Fakes.php';
+use OCA\LocalBase\Tests\Support\PhpTestRunner;
 
-$tests = [
-    __DIR__ . '/Contract/PublicApiV1ContractTest.php',
-    __DIR__ . '/Service/OrganizationRuntimeTest.php',
-    __DIR__ . '/Service/CalendarRuntimeTest.php',
-    __DIR__ . '/Service/OrganizationAdminServiceTest.php',
+require_once __DIR__ . '/bootstrap.php';
+
+$entrypoints =
+[
+    __DIR__ . '/Contract/OptionalPermissionRuntimeContractTest.php',
+    __DIR__ . '/suite.php',
 ];
 
-foreach ($tests as $test) {
-    require $test;
+foreach ($entrypoints as $entrypoint)
+{
+    $command = PhpTestRunner::withOptionalCoverage(dirname(__DIR__), [PHP_BINARY, $entrypoint]);
+    passthru(implode(' ', array_map('escapeshellarg', $command)), $exitCode);
+    if ($exitCode !== 0)
+    {
+        exit($exitCode);
+    }
 }
 
-fwrite(STDOUT, sprintf("OK (%d test files)\n", count($tests)));
+fwrite(STDOUT, "OK (isolated contract and main suite)\n");
 

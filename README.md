@@ -22,7 +22,41 @@ php tests/run.php
 node tests/run-js.mjs
 ```
 
-## Documentation
+The PHP test entry uses the development-only `PhpTestRunner` helper from a
+sibling `localbase` checkout. This does not add a LocalBase runtime dependency.
+The same helper instruments the isolated bootstrap contract and the main
+suite when both `PHP_COVERAGE_COMMAND` and `PHP_COVERAGE_OUTPUT_DIR` are set.
+PHPCOV includes all `lib/` files, including files the tests never execute.
+
+```bash
+PHP_COVERAGE_COMMAND="$(pwd)/../localbase/tests/coverage/vendor/bin/phpcov" \
+PHP_COVERAGE_OUTPUT_DIR="/tmp/flz-organization-php-coverage" \
+XDEBUG_MODE=coverage php tests/run.php
+php ../localbase/tests/coverage/merge-clover.php \
+  flz_organization /tmp/flz-organization-php-coverage 67.79
+
+../localbase/tests/coverage/node_modules/.bin/c8 \
+  --all '--include=js/**/*.js' --check-coverage --lines=100.00 \
+  node tests/run-js.mjs
+```
+
+Use a fresh PHP report directory for each measurement. The CI workflow installs
+the locked development tools and applies the same regression thresholds.
+The initial PHP measurement on 15 November 2026 was **49.95%** (476/953
+executable lines). After extending the dependency-light suite from eight to ten
+test files, the fresh PHP measurement is **67.79%** (646/953). The added
+`AdminControllerTest` covers 68/68 lines and
+`RefreshHolidayCalendarJobTest` covers 8/8 lines. The initial JavaScript
+measurement on 15 November 2026 was **0.00%** (0/51);
+the current suite executes all **51/51 lines (100.00%)** in `js/admin.js`, and
+CI enforces that measured threshold. The controller and background-job tests
+(`tests/Controller/AdminControllerTest.php`,
+`tests/BackgroundJob/RefreshHolidayCalendarJobTest.php`) run as plain-PHP
+files inside `tests/run.php` via `tests/suite.php`; no PHPUnit dependency is
+required. Overall PHP coverage remains below the 85% target. Runtime, browser,
+and full application coverage also remain incomplete.
+
+## Dokumentation
 
 - [Architecture](docs/architecture.md)
 - [Public API V1](docs/public-api-v1.md)

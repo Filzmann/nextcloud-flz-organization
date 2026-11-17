@@ -2,7 +2,19 @@
 
 declare(strict_types=1);
 
-spl_autoload_register(static function (string $class): void {
+spl_autoload_register(static function (string $class): void
+{
+    if ($class === 'OCA\\LocalBase\\Tests\\Support\\PhpTestRunner')
+    {
+        // Development tooling only; application runtime remains independent.
+        $runner = dirname(__DIR__, 2) . '/localbase/tests/Support/PhpTestRunner.php';
+        if (!is_file($runner))
+        {
+            throw new RuntimeException('The development-only LocalBase test runner is missing beside this repository.');
+        }
+        require_once $runner;
+        return;
+    }
     $prefix = 'OCA\\FlzOrganization\\';
     if (!str_starts_with($class, $prefix)) {
         return;
