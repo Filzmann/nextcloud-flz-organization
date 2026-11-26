@@ -14,6 +14,7 @@ $tests =
     __DIR__ . '/Service/OrganizationRuntimeTest.php',
     __DIR__ . '/Service/CalendarRuntimeTest.php',
     __DIR__ . '/Service/OrganizationAdminServiceTest.php',
+    __DIR__ . '/Service/AssistantContextListenerTest.php',
     __DIR__ . '/Integration/ApplicationIntegrationTest.php',
     __DIR__ . '/Permission/PermissionProviderTest.php',
     __DIR__ . '/Controller/AdminControllerTest.php',
