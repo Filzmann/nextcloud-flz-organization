@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace OCA\FlzOrganization\AppInfo;
 
+use OCA\FlzKapazitaet\PublicApi\V1\AssistantContextQueryEvent;
+use OCA\FlzOrganization\Listener\AssistantContextListener;
 use OCA\FlzOrganization\Permission\PermissionProviderListener;
 use OCA\FlzPermissionMatrix\PublicApi\V1\RegisterPermissionProvidersEvent;
 use OCP\AppFramework\App;
@@ -25,6 +27,11 @@ final class Application extends App implements IBootstrap
         $context->registerEventListener(
             RegisterPermissionProvidersEvent::class,
             PermissionProviderListener::class,
+        );
+        // Provider für Kontext-Hinweise (Team im Büro) des flz_kapazitaet-V1-Vertrags; ohne installierte App feuert das Event nie.
+        $context->registerEventListener(
+            AssistantContextQueryEvent::class,
+            AssistantContextListener::class,
         );
     }
 
