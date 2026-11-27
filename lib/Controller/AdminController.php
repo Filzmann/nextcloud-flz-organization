@@ -6,6 +6,7 @@ namespace OCA\FlzOrganization\Controller;
 
 use OCA\FlzOrganization\Service\OrganizationAdminService;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
 
@@ -30,6 +31,7 @@ class AdminController extends Controller
     /**
      * Zeigt die Admin-Übersichtsseite an.
      */
+    #[NoCSRFRequired]
     public function index(): TemplateResponse
     {
         $status = $this->adminService->getConfigurationStatus();
@@ -47,6 +49,7 @@ class AdminController extends Controller
     /**
      * Zeigt das Formular für die Organisationsdefinition an.
      */
+    #[NoCSRFRequired]
     public function organizationForm(): TemplateResponse
     {
         $definition = $this->adminService->getOrganizationDefinition();
@@ -95,6 +98,7 @@ class AdminController extends Controller
     /**
      * Zeigt das Formular für den Kalenderkontext an.
      */
+    #[NoCSRFRequired]
     public function calendarForm(): TemplateResponse
     {
         $context = $this->adminService->getCalendarContext();
