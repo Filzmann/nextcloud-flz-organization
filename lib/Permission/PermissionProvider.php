@@ -15,7 +15,7 @@ final class PermissionProvider implements PermissionProviderContract
     {
         return new PermissionProviderDescriptor(
             'flz_organization',
-            'Organization Services',
+            'Organisationsdienste',
             '1.0',
             ['permissions'],
         );

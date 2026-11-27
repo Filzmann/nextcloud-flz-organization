@@ -12,7 +12,7 @@ $provider = new PermissionProvider();
 $descriptor = $provider->descriptor();
 
 assertSame('flz_organization', $descriptor->appId(), 'The provider app ID must remain stable.');
-assertSame('Organization Services', $descriptor->displayName(), 'The provider display name must remain stable.');
+assertSame('Organisationsdienste', $descriptor->displayName(), 'The provider display name must remain stable.');
 assertSame('1.0', $descriptor->contractVersion(), 'The provider must advertise the supported V1 contract.');
 assertSame(['permissions'], $descriptor->capabilities(), 'The provider must expose only the permission-inventory capability.');
 

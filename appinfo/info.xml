@@ -2,11 +2,11 @@
 <info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
     <id>flz_organization</id>
-    <name>Organization Services</name>
+    <name>Organisationsdienste</name>
     <name lang="de">Organisationsdienste</name>
-    <summary>Versioned organization, calendar and integration contracts for Nextcloud apps.</summary>
+    <summary>Versionierte Organisations-, Kalender- und Integrationsverträge für Nextcloud-Apps.</summary>
     <summary lang="de">Versionierte Organisations-, Kalender- und Integrationsverträge für Nextcloud-Apps.</summary>
-    <description>Owns shared organization configuration, calendar context, holiday cache and public cross-app events without depending on LocalBase.</description>
+    <description>Gemeinsame Organisationskonfiguration, Kalenderkontext, Feiertags-Cache und öffentliche app-übergreifende Events ohne LocalBase-Abhängigkeit.</description>
     <description lang="de">Besitzt gemeinsame Organisationskonfiguration, Kalenderkontext, Feiertagscache und öffentliche Cross-App-Events ohne LocalBase-Abhängigkeit.</description>
     <version>0.1.0-dev.2</version>
     <licence>agpl</licence>
@@ -22,7 +22,7 @@
     </background-jobs>
     <navigations>
         <admin>
-            <name>Organization Services</name>
+            <name>Organisationsdienste</name>
             <name lang="de">Organisationsdienste</name>
             <route>flz_organization.admin.index</route>
             <route-params></route-params>

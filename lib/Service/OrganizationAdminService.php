@@ -9,6 +9,7 @@ use OCA\FlzOrganization\Calendar\CalendarContextSettingsService;
 use OCA\FlzOrganization\Organization\AuthorizationSettingsService;
 use OCA\FlzOrganization\Organization\OrganizationDefinition;
 use OCA\FlzOrganization\Organization\OrganizationSettingsService;
+use OCP\IL10N;
 
 /**
  * Bereitstellt Admin-spezifische Lese- und Validierungsmethoden für die
@@ -23,7 +24,14 @@ final class OrganizationAdminService {
         private OrganizationSettingsService $organizationSettings,
         private CalendarContextSettingsService $calendarSettings,
         private AuthorizationSettingsService $authorizationSettings,
+        private ?IL10N $l10n = null,
     ) {}
+
+    /** Lokalisierung der fachlichen Fehlertexte; im Test ohne IL10N identity. */
+    private function t(string $text): string
+    {
+        return $this->l10n?->t($text) ?? $text;
+    }
 
     /**
      * Gibt die aktuelle Organisationsdefinition zurück.
@@ -64,10 +72,10 @@ final class OrganizationAdminService {
             $definition = OrganizationDefinition::get($data);
             return ['valid' => true, 'definition' => $definition, 'errors' => []];
         } catch (\InvalidArgumentException $e) {
-            $errors[] = $e->getMessage();
+            $errors[] = $this->t($e->getMessage());
             return ['valid' => false, 'definition' => OrganizationDefinition::defaults(), 'errors' => $errors];
         } catch (\Throwable $e) {
-            $errors[] = 'Ungültige Organisationsdefinition: ' . $e->getMessage();
+            $errors[] = $this->t('Ungültige Organisationsdefinition: ') . $this->t($e->getMessage());
             return ['valid' => false, 'definition' => OrganizationDefinition::defaults(), 'errors' => $errors];
         }
     }
@@ -89,7 +97,7 @@ final class OrganizationAdminService {
             $definition = $this->organizationSettings->save($data);
             return ['success' => true, 'definition' => $definition, 'errors' => []];
         } catch (\Throwable $e) {
-            return ['success' => false, 'definition' => null, 'errors' => ['Speichern fehlgeschlagen: ' . $e->getMessage()]];
+            return ['success' => false, 'definition' => null, 'errors' => [$this->t('Speichern fehlgeschlagen: ') . $this->t($e->getMessage())]];
         }
     }
 
@@ -106,10 +114,10 @@ final class OrganizationAdminService {
             $context = CalendarContext::get($data);
             return ['valid' => true, 'context' => $context, 'errors' => []];
         } catch (\InvalidArgumentException $e) {
-            $errors[] = $e->getMessage();
+            $errors[] = $this->t($e->getMessage());
             return ['valid' => false, 'context' => null, 'errors' => $errors];
         } catch (\Throwable $e) {
-            $errors[] = 'Ungültiger Kalenderkontext: ' . $e->getMessage();
+            $errors[] = $this->t('Ungültiger Kalenderkontext: ') . $this->t($e->getMessage());
             return ['valid' => false, 'context' => null, 'errors' => $errors];
         }
     }
@@ -131,7 +139,7 @@ final class OrganizationAdminService {
             $context = $this->calendarSettings->save($data);
             return ['success' => true, 'context' => $context, 'errors' => []];
         } catch (\Throwable $e) {
-            return ['success' => false, 'context' => null, 'errors' => ['Speichern fehlgeschlagen: ' . $e->getMessage()]];
+            return ['success' => false, 'context' => null, 'errors' => [$this->t('Speichern fehlgeschlagen: ') . $this->t($e->getMessage())]];
         }
     }
 

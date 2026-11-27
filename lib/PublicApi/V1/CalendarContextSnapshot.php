@@ -16,7 +16,7 @@ final class CalendarContextSnapshot {
         if (preg_match('/^[A-Z]{2}$/', $countryCode) !== 1
             || preg_match('/^' . preg_quote($countryCode, '/') . '-[A-Z0-9]{1,3}$/', $subdivisionCode) !== 1
             || !in_array($timezone, DateTimeZone::listIdentifiers(DateTimeZone::ALL_WITH_BC), true)) {
-            throw new InvalidArgumentException('Invalid public calendar context.');
+            throw new InvalidArgumentException('Ungültiger öffentlicher Kalenderkontext.');
         }
     }
 

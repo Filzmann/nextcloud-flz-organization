@@ -25,7 +25,7 @@ final class OrganizationSnapshot {
         private array $definition = [],
     ) {
         if ($definitionVersion < 1) {
-            throw new InvalidArgumentException('Invalid organization definition version.');
+            throw new InvalidArgumentException('Ungültige Organisationsdefinitions-Version.');
         }
         if (!$valid) {
             $this->roles = [];
@@ -44,7 +44,7 @@ final class OrganizationSnapshot {
             ...array_column($this->identityGroups, 'groupId'),
         ];
         if (count($groupIds) !== count(array_unique($groupIds))) {
-            throw new InvalidArgumentException('Organization group mappings must be unique.');
+            throw new InvalidArgumentException('Organisations-Gruppenzuordnungen müssen eindeutig sein.');
         }
         $this->definition = $this->normalizeDefinition($definition);
     }
@@ -99,12 +99,12 @@ final class OrganizationSnapshot {
         $normalized = [];
         foreach ($mappings as $key => $mapping) {
             if (!is_string($key) || trim($key) === '' || !is_array($mapping)) {
-                throw new InvalidArgumentException('Invalid organization mapping identity.');
+                throw new InvalidArgumentException('Ungültige Identität der Organisationszuordnung.');
             }
             $groupId = $mapping['groupId'] ?? null;
             $label = $mapping['label'] ?? null;
             if (!is_string($groupId) || trim($groupId) === '' || !is_string($label) || trim($label) === '') {
-                throw new InvalidArgumentException('Invalid organization mapping fields.');
+                throw new InvalidArgumentException('Ungültige Felder der Organisationszuordnung.');
             }
             $normalized[trim($key)] = ['groupId' => trim($groupId), 'label' => trim($label)];
         }
@@ -122,14 +122,14 @@ final class OrganizationSnapshot {
             || !is_array($definition['roles'] ?? null)
             || !is_array($definition['areas'] ?? null)
             || !is_array($definition['hierarchy'] ?? null)) {
-            throw new InvalidArgumentException('Invalid public organization definition.');
+            throw new InvalidArgumentException('Ungültige öffentliche Organisationsdefinition.');
         }
         foreach ($this->roles as $key => $mapping) {
             $definitionRole = $definition['roles'][$key] ?? null;
             if (!is_array($definitionRole)
                 || ($definitionRole['groupId'] ?? null) !== $mapping['groupId']
                 || ($definitionRole['label'] ?? null) !== $mapping['label']) {
-                throw new InvalidArgumentException('Public organization role projection is inconsistent.');
+                throw new InvalidArgumentException('Öffentliche Rollenprojektion der Organisation ist inkonsistent.');
             }
         }
         foreach ($this->areas as $key => $mapping) {
@@ -137,7 +137,7 @@ final class OrganizationSnapshot {
             if (!is_array($definitionArea)
                 || ($definitionArea['groupId'] ?? null) !== $mapping['groupId']
                 || ($definitionArea['label'] ?? null) !== $mapping['label']) {
-                throw new InvalidArgumentException('Public organization area projection is inconsistent.');
+                throw new InvalidArgumentException('Öffentliche Bereichsprojektion der Organisation ist inkonsistent.');
             }
         }
         return $definition;
