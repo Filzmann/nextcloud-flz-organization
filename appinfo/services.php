@@ -92,6 +92,7 @@ return [
             $c->get(OrganizationSettingsService::class),
             $c->get(CalendarContextSettingsService::class),
             $c->get(AuthorizationSettingsService::class),
+            $c->getServerContainer()->getL10N('flz_organization'),
         );
     },
 

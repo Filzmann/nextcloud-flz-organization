@@ -12,7 +12,10 @@ The app owns these canonical AppConfig values under `flz_organization`:
 - `organization_definition` for semantic roles, areas, identity groups,
   hierarchy, and teams;
 - `authorization_settings` for calendar and vacation peer scopes;
-- `calendar_context` for country, subdivision, and organization timezone;
+- `calendar_context` for country, subdivision, and organization timezone
+  (the timezone field always mirrors the instance timezone from the Nextcloud
+  system settings, `config.php` `timezone`, fallback UTC — it is not
+  org-local configurable);
 - region- and year-bound holiday cache entries.
 
 Fresh install/reinstall is the authorized development transition. No

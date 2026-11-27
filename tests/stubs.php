@@ -10,6 +10,10 @@ namespace OCP {
         public function getValueString(string $appId, string $key, string $default = '', bool $lazy = false): string;
         public function setValueString(string $appId, string $key, string $value, bool $lazy = false, int $sensitive = 0): bool;
     }
+
+    interface IConfig {
+        public function getSystemValueString(string $key, string $default = ''): string;
+    }
 }
 
 namespace OCP\EventDispatcher {
