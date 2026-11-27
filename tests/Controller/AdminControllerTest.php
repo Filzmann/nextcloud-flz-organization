@@ -12,6 +12,7 @@ use OCA\FlzOrganization\Organization\OrganizationDefinition;
 use OCA\FlzOrganization\Organization\OrganizationSettingsService;
 use OCA\FlzOrganization\Service\OrganizationAdminService;
 use OCA\FlzOrganization\Tests\FakeAppConfig;
+use OCA\FlzOrganization\Tests\FakeSystemConfig;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
 use ReflectionClass;
@@ -29,7 +30,7 @@ $request = new class implements IRequest {
 
 $config = new FakeAppConfig();
 $organizationSettings = new OrganizationSettingsService($config);
-$calendarSettings = new CalendarContextSettingsService($config);
+$calendarSettings = new CalendarContextSettingsService($config, new FakeSystemConfig());
 $authorizationSettings = new AuthorizationSettingsService($config, $organizationSettings);
 $adminService = new OrganizationAdminService($organizationSettings, $calendarSettings, $authorizationSettings);
 $controller = new AdminController($request, $adminService);

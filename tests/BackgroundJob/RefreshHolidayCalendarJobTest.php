@@ -10,6 +10,7 @@ use OCA\FlzOrganization\Calendar\HolidayCalendarCacheStore;
 use OCA\FlzOrganization\Calendar\HolidayCalendarService;
 use OCA\FlzOrganization\Calendar\OpenHolidaysClient;
 use OCA\FlzOrganization\Tests\FakeAppConfig;
+use OCA\FlzOrganization\Tests\FakeSystemConfig;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\BackgroundJob\IJob;
 use OCP\BackgroundJob\TimedJob;
@@ -94,7 +95,7 @@ final class NullLogger implements LoggerInterface
 // Festes Datum: 15.06.2026 12:00 UTC, in Europe/Berlin ebenfalls 2026.
 $time = new FakeTimeFactory(strtotime('2026-06-15 12:00:00 UTC'));
 $config = new FakeAppConfig();
-$contexts = new CalendarContextSettingsService($config);
+$contexts = new CalendarContextSettingsService($config, new FakeSystemConfig());
 $httpClient = new RecordingHttpClient();
 $cacheStore = new HolidayCalendarCacheStore($config);
 $holidays = new HolidayCalendarService(

@@ -11,12 +11,13 @@ use OCA\FlzOrganization\Organization\OrganizationDefinition;
 use OCA\FlzOrganization\Organization\OrganizationSettingsService;
 use OCA\FlzOrganization\Service\OrganizationAdminService;
 use OCA\FlzOrganization\Tests\FakeAppConfig;
+use OCA\FlzOrganization\Tests\FakeSystemConfig;
 
 $config = new FakeAppConfig();
 
 // Initialize settings services
 $organizationSettings = new OrganizationSettingsService($config);
-$calendarSettings = new CalendarContextSettingsService($config);
+$calendarSettings = new CalendarContextSettingsService($config, new FakeSystemConfig());
 $authorizationSettings = new AuthorizationSettingsService($config, $organizationSettings);
 
 // Create admin service
@@ -30,7 +31,7 @@ assertSame(OrganizationDefinition::defaults()->toArray(), $definition->toArray()
 // Test 2: Get default calendar context timezone name
 $context = $adminService->getCalendarContext();
 assertSame('Europe/Berlin', $context->toArray()['timezone'], 
-    'Admin service must return default timezone (Europe/Berlin).');
+    'Admin service must return the instance timezone from the Nextcloud system settings.');
 
 // Test 3: Validate and save organization definition
 // Use defaults and modify only the fields we need to test

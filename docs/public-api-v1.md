@@ -29,7 +29,9 @@ the enabled group IDs for one of these stable scopes.
 ## Calendar
 
 `CalendarContextProvider` exposes country, ISO-3166-2 subdivision, and the
-organization IANA timezone. `HolidayCalendarProvider` exposes public holiday
+organization IANA timezone; the timezone always equals the instance timezone
+from the Nextcloud system settings (`config.php` `timezone`, fallback UTC) and
+applies across all apps. `HolidayCalendarProvider` exposes public holiday
 dates, labels and inclusive periods plus explicit cache status. `stale` remains usable with a visible
 freshness limitation; `unavailable` is not usable.
 
