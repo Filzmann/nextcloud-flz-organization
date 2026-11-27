@@ -23,16 +23,16 @@ final class HolidayCalendarSnapshot {
         private ?string $fetchedAt,
         private array $publicHolidays = [],
     ) {
-        if ($year < 2000 || $year > 2100) throw new InvalidArgumentException('Invalid holiday year.');
-        if ($timezone === '') throw new InvalidArgumentException('Missing holiday timezone.');
-        if (!in_array($cacheStatus, ['fresh', 'current', 'stale', 'unavailable'], true)) throw new InvalidArgumentException('Invalid holiday cache status.');
+        if ($year < 2000 || $year > 2100) throw new InvalidArgumentException('Ungültiges Feiertagsjahr.');
+        if ($timezone === '') throw new InvalidArgumentException('Feiertags-Zeitzone fehlt.');
+        if (!in_array($cacheStatus, ['fresh', 'current', 'stale', 'unavailable'], true)) throw new InvalidArgumentException('Ungültiger Kalendercachestatus.');
         foreach ($publicHolidayDates as $date) {
-            if (!is_string($date) || preg_match('/^\d{4}-\d{2}-\d{2}$/', $date) !== 1) throw new InvalidArgumentException('Invalid holiday date.');
+            if (!is_string($date) || preg_match('/^\d{4}-\d{2}-\d{2}$/', $date) !== 1) throw new InvalidArgumentException('Ungültiges Feiertagsdatum.');
         }
         $this->publicHolidayDates = array_values(array_unique($publicHolidayDates));
         sort($this->publicHolidayDates);
         $this->publicHolidays = array_map(static function (mixed $period): array {
-            if (!is_array($period)) throw new InvalidArgumentException('Invalid public holiday period.');
+            if (!is_array($period)) throw new InvalidArgumentException('Ungültiger öffentlicher Feiertagszeitraum.');
             $startDate = $period['startDate'] ?? null;
             $endDate = $period['endDate'] ?? null;
             $name = $period['name'] ?? null;
@@ -40,7 +40,7 @@ final class HolidayCalendarSnapshot {
                 || preg_match('/^\d{4}-\d{2}-\d{2}$/', $startDate) !== 1
                 || preg_match('/^\d{4}-\d{2}-\d{2}$/', $endDate) !== 1
                 || trim($name) === '' || $endDate < $startDate) {
-                throw new InvalidArgumentException('Invalid public holiday period.');
+                throw new InvalidArgumentException('Ungültiger öffentlicher Feiertagszeitraum.');
             }
             return ['startDate' => $startDate, 'endDate' => $endDate, 'name' => trim($name)];
         }, $publicHolidays);

@@ -58,6 +58,7 @@ and full application coverage also remain incomplete.
 
 ## Dokumentation
 
+- [Lokalisierungsinventar](docs/l10n-inventory.md)
 - [Architecture](docs/architecture.md)
 - [Public API V1](docs/public-api-v1.md)
 - [Manual acceptance](docs/manual-acceptance.md)

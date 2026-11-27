@@ -48,7 +48,7 @@ final class OrganizationAuthorizationService {
             self::SCOPE_CALENDAR_EDIT => $this->settings->calendarPeerEditing(),
             self::SCOPE_VACATION_EDIT => $this->settings->vacationPeerEditing(),
             self::SCOPE_VACATION_APPROVE => $this->settings->vacationPeerApproval(),
-            default => throw new InvalidArgumentException('Unknown organization authorization scope.'),
+            default => throw new InvalidArgumentException('Unbekannter Autorisierungsumfang der Organisation.'),
         }));
     }
 }

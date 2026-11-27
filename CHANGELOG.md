@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- L10N-Migration (ZM-06): Kataloge `l10n/de.*` + `l10n/en_GB.*` (englische Quelltexte), `tests/Ui/L10nCatalogContractTest.php`, `docs/l10n-inventory.md`.
+
 - Provider for the public flz_kapazitaet V1 contract `AssistantContextQueryEvent`: new `Listener/AssistantContextListener` answers with the ASN team in the logged-in user's office (team + assistants from the public flzplaner V1 catalog `AcuteShiftCatalogProvider::teamsForBureaux` for the user's areas via the organization definition), fail-closed without session/valid definition/area/planer. Registered in `Application::register` (fires only when flz_kapazitaet is installed). New `Service/PlanerTeamCatalogGateway` wraps the planer catalog read-only. Test: `tests/Service/AssistantContextListenerTest.php` (provider + fail-closed cases).
 - Expanded the dependency-light PHP suite from eight to ten test files with
   controller and background-job coverage (68/68 and 8/8 lines). The fresh PHP
