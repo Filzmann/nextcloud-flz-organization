@@ -1,0 +1,381 @@
+{
+  "schema_version": "1.0",
+  "app_id": "flz_organization",
+  "processings": [
+    {
+      "processing_id": "organization_definition",
+      "name": "Organisationsdefinition (Rollen, Bereiche, Identitätsgruppen)",
+      "controller": {
+        "component": "flz_organization",
+        "business_owner": "Datenschutzbeauftragte"
+      },
+      "data_categories": [
+        "Rollen-, Bereichs- und Identitätsgruppen-Schlüssel mit Anzeigenamen und Nextcloud-Gruppen-IDs",
+        "Hierarchie- und Teamkonfiguration (Präfixe, Teamcodes)",
+        "Konfigurationshistorie über AppConfig-Wert organization_definition"
+      ],
+      "data_subjects": [
+        "Mitglieder der konfigurierten Nextcloud-Gruppen (nur mittelbar über Gruppen-IDs referenziert)",
+        "Administrierende Personen, die die Definition bearbeiten"
+      ],
+      "purposes": [
+        "Bereitstellung der kanonischen Organisationsprojektion über den öffentlichen V1-Vertrag",
+        "Steuerung sichtbarer Rollen, Bereiche und Berechtigungszordnungen in den Fachapps"
+      ],
+      "access_roles": [
+        "Native Nextcloud-Administration mit aktiver app-lokaler Freigabe zur Bearbeitung",
+        "Fachapps ausschließlich lesend über den versionierten PublicApi-V1-Vertrag"
+      ],
+      "recipients": [
+        {
+          "category": "Angebundene Filzmann-Fachapps",
+          "allowed_disclosures": ["Definitions-Snapshot mit Rollen-, Bereichs- und Identitätsgruppen-IDs"],
+          "conditions": ["PublicApi-V1-Versionshandshake", "fail-closed bei fehlendem oder inkompatiblem Provider"]
+        }
+      ],
+      "data_sources": [
+        "Admin-Eingaben im flz_organization-Adminbereich",
+        "AppConfig-Wert organization_definition der App flz_organization"
+      ],
+      "legal_basis": {
+        "status": "PRIVACY-DECISION-REQUIRED",
+        "affected_data": "Konfigurationsdaten mit mittelbarem Personenbezug über Gruppen-IDs",
+        "planned_processing": "Organisationsweite Rollensteuerung",
+        "missing_decision": "Anwendbare Rechtsgrundlage für die organisationsweite Konfiguration",
+        "reason": "Die Rechtsgrundlage ist fachlich und rechtlich zu entscheiden.",
+        "technical_impact": "Der Katalog behauptet keine freigegebene Rechtsgrundlage.",
+        "privacy_preserving_alternative": "Nur erforderliche Gruppen-IDs und Anzeigenamen speichern; keine Mitgliedschaften in der App persistieren.",
+        "responsible_party": "ungeklärt",
+        "blocking": false
+      },
+      "retention": {
+        "policy_id": "organization_definition_current_plus_admin_history",
+        "trigger": "Jede Speicherung ersetzt den vorherigen AppConfig-Wert",
+        "duration_or_deadline": "Unbegrenzt bis zur nächsten Änderung; keine automatische Löschung",
+        "action": "delete",
+        "conditions_or_holds": [
+          "Die Definition ist Konfigurationsbestand ohne personenbezogene Historie; Änderungen werden nicht versioniert protokolliert.",
+          "Eine Löschung erfolgt nur auf fachliche Anweisung im Adminbereich."
+        ]
+      },
+      "logging": {
+        "audit_requirements": ["Änderungen der Definition müssen ohne personenbezogene Inhalte diagnostizierbar bleiben"],
+        "personal_data_policy": "Keine Gruppenmitgliedschaften oder UIDs in Standardlogs übernehmen."
+      },
+      "backup": {
+        "relevance": {
+          "status": "PRIVACY-DECISION-REQUIRED",
+          "affected_data": "AppConfig-Wert organization_definition in der Nextcloud-Datenbank",
+          "planned_processing": "Einbeziehung in betriebliche Sicherung und Wiederherstellung",
+          "missing_decision": "Backup-Relevanz und Aufbewahrungsdauer",
+          "reason": "Der App-Code kennt den betrieblichen Backupzyklus nicht.",
+          "technical_impact": "Die App kann keinen Entfall aus Sicherungen behaupten.",
+          "privacy_preserving_alternative": "Keine separate app-eigene Sicherungskopie anlegen.",
+          "responsible_party": "ungeklärt",
+          "blocking": false
+        },
+        "restore_handling": {
+          "status": "PRIVACY-DECISION-REQUIRED",
+          "affected_data": "Nach Restore erneut vorhandene Organisationsdefinition",
+          "planned_processing": "Erneute Nutzung der wiederhergestellten Konfiguration",
+          "missing_decision": "Behandlung wiederhergestellter Konfiguration bei fachlicher Änderung",
+          "reason": "Restore-Pfade sind betrieblich zu bewerten.",
+          "technical_impact": "Keine automatische Löschung nach Restore.",
+          "privacy_preserving_alternative": "Zugriff auf den serverseitigen Rechtevertrag begrenzen.",
+          "responsible_party": "Datenschutzbeauftragte und technische App-Verantwortung",
+          "blocking": false
+        }
+      },
+      "exports_and_reports": {
+        "article_15_relevance": "Die Definition selbst enthält keine personenbezogenen Laufzeitdaten; Art.-15-Ausgaben erfolgen über die registrierten PersonalDataProvider der Fachapps.",
+        "other_outputs": ["Organisations-Snapshot über PublicApi V1 an Fachapps"],
+        "minimization": "Consumer erhalten nur die erforderlichen Gruppen-IDs und Anzeigenamen, keine Mitgliedschaften."
+      },
+      "data_subject_rights": {
+        "article_15": "Nicht anwendbar auf die reine Konfiguration; betroffene Personen werden über die Provider der Fachapps auskunftsfähig.",
+        "rectification": "Administrierende Personen können die Definition im Adminbereich berichtigen.",
+        "restriction": {
+          "status": "PRIVACY-DECISION-REQUIRED",
+          "affected_data": "Strittige Konfigurationsbestandteile mit mittelbarem Personenbezug",
+          "planned_processing": "Einschränkung der Nutzung einzelner Rollen oder Bereiche",
+          "missing_decision": "Fachliche Sperrgründe und technische Wirkung",
+          "reason": "Ein Einschränkungsworkflow ist nicht definiert.",
+          "technical_impact": "Kein automatischer Einschränkungspfad wird angeboten.",
+          "privacy_preserving_alternative": "Betroffene Gruppen-IDs fachlich deaktivieren statt Daten zu löschen.",
+          "responsible_party": "ungeklärt",
+          "blocking": true
+        },
+        "erasure_or_anonymization": {
+          "status": "PRIVACY-DECISION-REQUIRED",
+          "affected_data": "Konfigurationsbestandteile mit mittelbarem Personenbezug",
+          "planned_processing": "Löschung oder Anonymisierung nach festzulegender Frist",
+          "missing_decision": "Maßnahme und Nachweispflichten",
+          "reason": "Kein Löschkonzept für Konfiguration beschlossen.",
+          "technical_impact": "Keine automatische Löschung.",
+          "privacy_preserving_alternative": "Keine zusätzlichen personenbezogenen Kopien erzeugen.",
+          "responsible_party": "ungeklärt",
+          "blocking": true
+        }
+      },
+      "international_transfers": "Die Organisationsdefinition wird nicht an Drittländer übermittelt.",
+      "automated_decisions": "Die Definition steuert Berechtigungsprüfungen mit, trifft aber keine automatisierte Entscheidung mit rechtlicher oder vergleichbar erheblicher Wirkung gegen betroffene Personen.",
+      "special_safeguards": [
+        "Fail-closed-Verhalten der Consumer bei fehlendem Provider",
+        "Serverseitige Berechtigungsprüfung in jeder Fachapp bleibt maßgeblich",
+        "Keine Mitgliedschaften werden in der App persistiert"
+      ],
+      "systems": ["Nextcloud", "flz_organization", "AppConfig-Schlüssel organization_definition"]
+    },
+    {
+      "processing_id": "calendar_context",
+      "name": "Kalenderkontext (Land, Region, fachliche Zeitzone)",
+      "controller": {
+        "component": "flz_organization",
+        "business_owner": "Datenschutzbeauftragte"
+      },
+      "data_categories": ["ISO-Ländercode, ISO-Regionscode, IANA-Zeitzone als AppConfig-Wert calendar_context"],
+      "data_subjects": ["Alle Nutzenden der angebundenen Fachapps mittelbar über die fachliche Zeitzone"],
+      "purposes": ["Einheitlicher Kalender- und Feiertagskontext für alle Fachapps", "Read-only Projektion über PublicApi V1"],
+      "access_roles": ["Native Nextcloud-Administration mit aktiver app-lokaler Freigabe zur Bearbeitung", "Fachapps lesend über PublicApi V1"],
+      "recipients": [
+        {
+          "category": "Angebundene Filzmann-Fachapps",
+          "allowed_disclosures": ["Kalenderkontext-Snapshot mit Land, Region und Zeitzone"],
+          "conditions": ["PublicApi-V1-Versionshandshake"]
+        }
+      ],
+      "data_sources": ["Admin-Eingaben im flz_organization-Adminbereich", "AppConfig-Wert calendar_context"],
+      "legal_basis": {
+        "status": "PRIVACY-DECISION-REQUIRED",
+        "affected_data": "Konfiguration ohne unmittelbaren Personenbezug",
+        "planned_processing": "Organisationsweiter Kalenderkontext",
+        "missing_decision": "Rechtsgrundlage der Konfiguration",
+        "reason": "Die Rechtsgrundlage ist fachlich zu entscheiden.",
+        "technical_impact": "Der Katalog behauptet keine freigegebene Rechtsgrundlage.",
+        "privacy_preserving_alternative": "Nur Land, Region und Zeitzone speichern.",
+        "responsible_party": "ungeklärt",
+        "blocking": false
+      },
+      "retention": {
+        "policy_id": "calendar_context_current",
+        "trigger": "Jede Speicherung ersetzt den vorherigen Wert",
+        "duration_or_deadline": "Unbegrenzt bis zur nächsten Änderung",
+        "action": "delete",
+        "conditions_or_holds": ["Keine personenbezogene Historie; Löschung nur auf fachliche Anweisung."]
+      },
+      "logging": {
+        "audit_requirements": ["Änderungen ohne personenbezogene Inhalte protokollierbar"],
+        "personal_data_policy": "Keine UIDs in Logs."
+      },
+      "backup": {
+        "relevance": {
+          "status": "PRIVACY-DECISION-REQUIRED",
+          "affected_data": "AppConfig-Wert calendar_context",
+          "planned_processing": "Betriebliche Sicherung",
+          "missing_decision": "Backup-Relevanz",
+          "reason": "Der betriebliche Backupzyklus ist der App nicht bekannt.",
+          "technical_impact": "Kein Entfall aus Sicherungen behauptbar.",
+          "privacy_preserving_alternative": "Keine app-eigene Sicherungskopie.",
+          "responsible_party": "ungeklärt",
+          "blocking": false
+        },
+        "restore_handling": {
+          "status": "PRIVACY-DECISION-REQUIRED",
+          "affected_data": "Wiederhergestellter Kalenderkontext",
+          "planned_processing": "Erneute Nutzung",
+          "missing_decision": "Restore-Bewertung",
+          "reason": "Restore-Pfade sind betrieblich zu bewerten.",
+          "technical_impact": "Keine automatische Löschung nach Restore.",
+          "privacy_preserving_alternative": "Keine zusätzlichen Kopien erzeugen.",
+          "responsible_party": "ungeklärt",
+          "blocking": false
+        }
+      },
+      "exports_and_reports": {
+        "article_15_relevance": "Keine personenbezogenen Inhalte; Art.-15-Ausgaben erfolgen über Fachapp-Provider.",
+        "other_outputs": ["Kalenderkontext-Snapshot über PublicApi V1"],
+        "minimization": "Nur Land, Region, Zeitzone."
+      },
+      "data_subject_rights": {
+        "article_15": "Nicht anwendbar auf die reine Konfiguration.",
+        "rectification": "Administrierende Personen berichtigen den Kontext im Adminbereich.",
+        "restriction": {"status": "PRIVACY-DECISION-REQUIRED", "affected_data": "Kalenderkontext", "planned_processing": "Einschränkung der Nutzung", "missing_decision": "Sperrgründe", "reason": "Kein Workflow definiert.", "technical_impact": "Kein automatischer Pfad.", "privacy_preserving_alternative": "Kontext fachlich deaktivieren.", "responsible_party": "ungeklärt", "blocking": true},
+        "erasure_or_anonymization": {"status": "PRIVACY-DECISION-REQUIRED", "affected_data": "Kalenderkontext", "planned_processing": "Löschung nach Frist", "missing_decision": "Maßnahme", "reason": "Kein Löschkonzept beschlossen.", "technical_impact": "Keine automatische Löschung.", "privacy_preserving_alternative": "Keine Kopien erzeugen.", "responsible_party": "ungeklärt", "blocking": true}
+      },
+      "international_transfers": "Der Kalenderkontext wird nicht an Drittländer übermittelt.",
+      "automated_decisions": "Keine automatisierte Entscheidung mit rechtlicher Wirkung.",
+      "special_safeguards": ["Fail-closed bei fehlendem Provider", "Nur notwendige Konfigurationswerte"],
+      "systems": ["Nextcloud", "flz_organization", "AppConfig-Schlüssel calendar_context"]
+    },
+    {
+      "processing_id": "holiday_calendar_cache",
+      "name": "Cache öffentlicher Ferien und Feiertage (OpenHolidays)",
+      "controller": {
+        "component": "flz_organization",
+        "business_owner": "Datenschutzbeauftragte"
+      },
+      "data_categories": [
+        "Öffentliche Feiertage und Schulferien (Datum, Name, Kategorie) für Land und Region",
+        "Cache-Metadaten (Abrufzeitpunkt, Cache-Status)"
+      ],
+      "data_subjects": ["Keine; öffentlich-rechtliche Kalenderdaten ohne Personenbezug"],
+      "purposes": ["Bereitstellung gemeinsamer Ferien- und Feiertagsdaten über PublicApi V1", "Vermeidung wiederholter Abrufe des externen Dienstes"],
+      "access_roles": ["Hintergrundjob der App flz_organization", "Fachapps lesend über PublicApi V1"],
+      "recipients": [
+        {
+          "category": "OpenHolidays-API (openholidays.org)",
+          "allowed_disclosures": ["Abgefragtes Land und Region (ISO-Codes), keine Nutzerdaten"],
+          "conditions": ["Nur bei Cache-Miss oder abgelaufenem Cache", "Abruf ohne Session-, Cookie- oder Nutzerdaten"]
+        },
+        {
+          "category": "Angebundene Filzmann-Fachapps",
+          "allowed_disclosures": ["Feiertags- und Ferien-Snapshot des Kalenderjahres"],
+          "conditions": ["PublicApi-V1-Versionshandshake"]
+        }
+      ],
+      "data_sources": ["Externe OpenHolidays-API", "App-eigener Cache (AppConfig/HolidayCalendarCacheStore)"],
+      "legal_basis": {
+        "status": "PRIVACY-DECISION-REQUIRED",
+        "affected_data": "Öffentliche Kalenderdaten; externe Übertragung von Land/Region",
+        "planned_processing": "Abruf und Cache öffentlicher Feiertage",
+        "missing_decision": "Rechtsgrundlage des externen Abrufs und Drittlandstatus des Dienstes",
+        "reason": "Der Drittlandstatus von openholidays.org ist zu bewerten.",
+        "technical_impact": "Der Katalog behauptet keine freigegebene Rechtsgrundlage.",
+        "privacy_preserving_alternative": "Nur Land und Region übertragen; keine Nutzerdaten.",
+        "responsible_party": "ungeklärt",
+        "blocking": false
+      },
+      "retention": {
+        "policy_id": "holiday_cache_per_fetch_window",
+        "trigger": "Ablauf des Cache-Fensters oder manuellem Refresh",
+        "duration_or_deadline": "Cache bis zum nächsten geplanten Refresh (Hintergrundjob)",
+        "action": "delete",
+        "conditions_or_holds": ["Öffentliche Kalenderdaten werden mit dem nächsten Refresh ersetzt.", "Kein Personenbezug, daher keine Schutzfrist erforderlich."]
+      },
+      "logging": {
+        "audit_requirements": ["Abruf- und Cache-Fehler ohne Nutzerdaten protokollieren"],
+        "personal_data_policy": "Keine UIDs oder Sessiondaten im Abruf-Log."
+      },
+      "backup": {
+        "relevance": {
+          "status": "PRIVACY-DECISION-REQUIRED",
+          "affected_data": "Cache öffentlicher Kalenderdaten",
+          "planned_processing": "Betriebliche Sicherung",
+          "missing_decision": "Backup-Relevanz des Caches",
+          "reason": "Der Cache ist replizierbar aus der externen Quelle.",
+          "technical_impact": "Kein Datenverlust bei Cache-Verlust behauptbar.",
+          "privacy_preserving_alternative": "Cache bei Bedarf neu abrufen statt zu sichern.",
+          "responsible_party": "ungeklärt",
+          "blocking": false
+        },
+        "restore_handling": {
+          "status": "PRIVACY-DECISION-REQUIRED",
+          "affected_data": "Wiederhergestellter Cache",
+          "planned_processing": "Erneute Nutzung",
+          "missing_decision": "Restore-Bewertung",
+          "reason": "Cache ist replizierbar.",
+          "technical_impact": "Kein Personenbezug.",
+          "privacy_preserving_alternative": "Cache verwerfen und neu abrufen.",
+          "responsible_party": "ungeklärt",
+          "blocking": false
+        }
+      },
+      "exports_and_reports": {
+        "article_15_relevance": "Nicht anwendbar; keine personenbezogenen Daten.",
+        "other_outputs": ["Feiertags-/Ferien-Snapshot über PublicApi V1 an Fachapps"],
+        "minimization": "Nur das abgefragte Kalenderjahr und Land/Region."
+      },
+      "data_subject_rights": {
+        "article_15": "Nicht anwendbar.",
+        "rectification": "Öffentliche Kalenderdaten werden über den externen Abruf berichtigt.",
+        "restriction": {"status": "PRIVACY-DECISION-REQUIRED", "affected_data": "Cache", "planned_processing": "Einschränkung", "missing_decision": "Nicht definiert.", "reason": "Kein Personenbezug.", "technical_impact": "Kein Pfad erforderlich.", "privacy_preserving_alternative": "Cache deaktivieren.", "responsible_party": "ungeklärt", "blocking": false},
+        "erasure_or_anonymization": {"status": "PRIVACY-DECISION-REQUIRED", "affected_data": "Cache", "planned_processing": "Löschung", "missing_decision": "Nicht definiert.", "reason": "Kein Personenbezug.", "technical_impact": "Kein automatischer Pfad.", "privacy_preserving_alternative": "Cache verwerfen.", "responsible_party": "ungeklärt", "blocking": false}
+      },
+      "international_transfers": "Abruf öffentlicher Kalenderdaten von openholidays.org; es werden ausschließlich Land und Region übertragen, keine personenbezogenen Daten. Drittlandstatus des Dienstes ist als PRIVACY-DECISION-REQUIRED offen.",
+      "automated_decisions": "Keine automatisierte Entscheidung mit rechtlicher Wirkung.",
+      "special_safeguards": ["Abruf ohne Session- und Nutzerdaten", "Cache auf das erforderliche Jahr begrenzt", "Fail-closed bei Abruffehler"],
+      "systems": ["Nextcloud", "flz_organization", "HolidayCalendarCacheStore", "OpenHolidays-API"]
+    },
+    {
+      "processing_id": "authorization_settings",
+      "name": "Berechtigungszordnung innerhalb von Fachgruppen (Peer-Rechte)",
+      "controller": {
+        "component": "flz_organization",
+        "business_owner": "Datenschutzbeauftragte"
+      },
+      "data_categories": ["Rollen- und Gruppen-bezogene Berechtigungsflags als AppConfig-Wert authorization_settings"],
+      "data_subjects": ["Mitglieder der betroffenen Rollengruppen mittelbar über Gruppen-IDs"],
+      "purposes": ["Steuerung optionaler Peer-Rechte in Fachapps über PublicApi V1", "Read-only Projektion der Berechtigungszuordnung"],
+      "access_roles": ["Native Nextcloud-Administration mit aktiver app-lokaler Freigabe zur Bearbeitung", "Fachapps lesend über PublicApi V1"],
+      "recipients": [
+        {
+          "category": "Angebundene Filzmann-Fachapps",
+          "allowed_disclosures": ["Berechtigungs-Snapshot mit Rollen- und Gruppenbezug"],
+          "conditions": ["PublicApi-V1-Versionshandshake", "serverseitige Prüfung bleibt in der Fachapp"]
+        }
+      ],
+      "data_sources": ["Admin-Eingaben im flz_organization-Adminbereich", "AppConfig-Wert authorization_settings"],
+      "legal_basis": {
+        "status": "PRIVACY-DECISION-REQUIRED",
+        "affected_data": "Berechtigungskonfiguration mit mittelbarem Personenbezug",
+        "planned_processing": "Steuerung von Peer-Rechten",
+        "missing_decision": "Rechtsgrundlage",
+        "reason": "Fachlich und rechtlich zu entscheiden.",
+        "technical_impact": "Keine freigegebene Rechtsgrundlage behauptet.",
+        "privacy_preserving_alternative": "Nur erforderliche Flags speichern.",
+        "responsible_party": "ungeklärt",
+        "blocking": false
+      },
+      "retention": {
+        "policy_id": "authorization_settings_current",
+        "trigger": "Jede Speicherung ersetzt den vorherigen Wert",
+        "duration_or_deadline": "Unbegrenzt bis zur nächsten Änderung",
+        "action": "delete",
+        "conditions_or_holds": ["Keine Historie; Löschung nur auf fachliche Anweisung."]
+      },
+      "logging": {
+        "audit_requirements": ["Änderungen ohne personenbezogene Inhalte protokollierbar"],
+        "personal_data_policy": "Keine UIDs in Logs."
+      },
+      "backup": {
+        "relevance": {
+          "status": "PRIVACY-DECISION-REQUIRED",
+          "affected_data": "AppConfig-Wert authorization_settings",
+          "planned_processing": "Betriebliche Sicherung",
+          "missing_decision": "Backup-Relevanz",
+          "reason": "Betrieblicher Backupzyklus unbekannt.",
+          "technical_impact": "Kein Entfall behauptbar.",
+          "privacy_preserving_alternative": "Keine app-eigene Kopie.",
+          "responsible_party": "ungeklärt",
+          "blocking": false
+        },
+        "restore_handling": {
+          "status": "PRIVACY-DECISION-REQUIRED",
+          "affected_data": "Wiederhergestellte Berechtigungskonfiguration",
+          "planned_processing": "Erneute Nutzung",
+          "missing_decision": "Restore-Bewertung",
+          "reason": "Restore betrieblich zu bewerten.",
+          "technical_impact": "Keine automatische Löschung.",
+          "privacy_preserving_alternative": "Keine zusätzlichen Kopien.",
+          "responsible_party": "ungeklärt",
+          "blocking": false
+        }
+      },
+      "exports_and_reports": {
+        "article_15_relevance": "Keine personenbezogenen Laufzeitdaten; Art. 15 über Fachapp-Provider.",
+        "other_outputs": ["Berechtigungs-Snapshot über PublicApi V1"],
+        "minimization": "Nur erforderliche Berechtigungsflags."
+      },
+      "data_subject_rights": {
+        "article_15": "Nicht anwendbar auf die Konfiguration selbst.",
+        "rectification": "Administrierende Personen berichtigen die Zuordnung.",
+        "restriction": {"status": "PRIVACY-DECISION-REQUIRED", "affected_data": "Berechtigungskonfiguration", "planned_processing": "Einschränkung", "missing_decision": "Sperrgründe", "reason": "Kein Workflow definiert.", "technical_impact": "Kein automatischer Pfad.", "privacy_preserving_alternative": "Flags deaktivieren.", "responsible_party": "ungeklärt", "blocking": true},
+        "erasure_or_anonymization": {"status": "PRIVACY-DECISION-REQUIRED", "affected_data": "Berechtigungskonfiguration", "planned_processing": "Löschung", "missing_decision": "Maßnahme", "reason": "Kein Löschkonzept.", "technical_impact": "Keine automatische Löschung.", "privacy_preserving_alternative": "Keine Kopien.", "responsible_party": "ungeklärt", "blocking": true}
+      },
+      "international_transfers": "Keine Drittlandübermittlung.",
+      "automated_decisions": "Die Konfiguration steuert Berechtigungen mit, begründet aber keine automatisierte Einzelentscheidung mit rechtlicher Wirkung.",
+      "special_safeguards": ["Serverseitige Prüfung bleibt in der Fachapp", "Fail-closed bei fehlendem Provider"],
+      "systems": ["Nextcloud", "flz_organization", "AppConfig-Schlüssel authorization_settings"]
+    }
+  ]
+}

@@ -15,6 +15,14 @@ spl_autoload_register(static function (string $class): void
         require_once $runner;
         return;
     }
+    $stubPrefix = 'OCA\\FlzDataProtection\\';
+    if (str_starts_with($class, $stubPrefix)) {
+        $stubFile = dirname(__DIR__) . '/tests/stubs/FlzDataProtection/' . str_replace('\\', '/', substr($class, strlen($stubPrefix))) . '.php';
+        if (is_file($stubFile)) {
+            require_once $stubFile;
+        }
+        return;
+    }
     $prefix = 'OCA\\FlzOrganization\\';
     if (!str_starts_with($class, $prefix)) {
         return;

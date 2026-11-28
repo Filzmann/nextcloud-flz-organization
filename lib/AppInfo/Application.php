@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace OCA\FlzOrganization\AppInfo;
 
+use OCA\FlzDataProtection\PublicApi\V1\RegisterProcessingMetadataProvidersEvent;
+use OCA\FlzOrganization\Privacy\FlzOrganizationProcessingMetadataProviderListener;
+
 use OCA\FlzKapazitaet\PublicApi\V1\AssistantContextQueryEvent;
 use OCA\FlzOrganization\Listener\AssistantContextListener;
 use OCA\FlzOrganization\Permission\PermissionProviderListener;
@@ -24,6 +27,7 @@ final class Application extends App implements IBootstrap
 
     public function register(IRegistrationContext $context): void
     {
+        $context->registerEventListener(RegisterProcessingMetadataProvidersEvent::class, FlzOrganizationProcessingMetadataProviderListener::class);
         $context->registerEventListener(
             RegisterPermissionProvidersEvent::class,
             PermissionProviderListener::class,
