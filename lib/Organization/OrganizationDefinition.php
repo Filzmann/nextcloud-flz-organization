@@ -406,6 +406,8 @@ final class OrganizationDefinition {
     private static function defaultIdentityGroups(): array {
         return [
             'works_council_member' => ['groupId' => 'BR-Mitglieder', 'label' => 'Betriebsratsmitglieder'],
+            'works_council_chair' => ['groupId' => 'BR-Vorsitzende', 'label' => 'Betriebsratsvorsitzende'],
+            'works_council_deputy' => ['groupId' => 'BR-Stellvertreter', 'label' => 'Stellvertretende Betriebsratsvorsitzende'],
         ];
     }
 
