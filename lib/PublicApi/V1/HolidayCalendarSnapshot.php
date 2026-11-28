@@ -14,6 +14,7 @@ final class HolidayCalendarSnapshot {
     /**
      * @param list<string> $publicHolidayDates
      * @param list<array{startDate:string,endDate:string,name:string}> $publicHolidays
+     * @param list<array{startDate:string,endDate:string,name:string}> $schoolHolidays
      */
     public function __construct(
         private int $year,
@@ -22,6 +23,7 @@ final class HolidayCalendarSnapshot {
         private array $publicHolidayDates,
         private ?string $fetchedAt,
         private array $publicHolidays = [],
+        private array $schoolHolidays = [],
     ) {
         if ($year < 2000 || $year > 2100) throw new InvalidArgumentException('Ungültiges Feiertagsjahr.');
         if ($timezone === '') throw new InvalidArgumentException('Feiertags-Zeitzone fehlt.');
@@ -44,9 +46,23 @@ final class HolidayCalendarSnapshot {
             }
             return ['startDate' => $startDate, 'endDate' => $endDate, 'name' => trim($name)];
         }, $publicHolidays);
+        $this->schoolHolidays = array_map(static function (mixed $period): array {
+            if (!is_array($period)) throw new InvalidArgumentException('Ungültiger Schulferienzeitraum.');
+            $startDate = $period['startDate'] ?? null;
+            $endDate = $period['endDate'] ?? null;
+            $name = $period['name'] ?? null;
+            if (!is_string($startDate) || !is_string($endDate) || !is_string($name)
+                || preg_match('/^\d{4}-\d{2}-\d{2}$/', $startDate) !== 1
+                || preg_match('/^\d{4}-\d{2}-\d{2}$/', $endDate) !== 1
+                || trim($name) === '' || $endDate < $startDate) {
+                throw new InvalidArgumentException('Ungültiger Schulferienzeitraum.');
+            }
+            return ['startDate' => $startDate, 'endDate' => $endDate, 'name' => trim($name)];
+        }, $schoolHolidays);
         if ($cacheStatus === 'unavailable') {
             $this->publicHolidayDates = [];
             $this->publicHolidays = [];
+            $this->schoolHolidays = [];
         }
     }
 
@@ -63,7 +79,12 @@ final class HolidayCalendarSnapshot {
             'endDate' => (string)$period['endDate'],
             'name' => (string)$period['name'],
         ], $data['publicHolidays']);
-        return new self((int)$data['year'], (string)$data['context']['timezone'], (string)$data['cacheStatus'], $dates, $data['fetchedAt'], $periods);
+        $schoolPeriods = array_map(static fn(array $period): array => [
+            'startDate' => (string)$period['startDate'],
+            'endDate' => (string)$period['endDate'],
+            'name' => (string)$period['name'],
+        ], $data['schoolHolidays'] ?? []);
+        return new self((int)$data['year'], (string)$data['context']['timezone'], (string)$data['cacheStatus'], $dates, $data['fetchedAt'], $periods, $schoolPeriods);
     }
 
     public function contractVersion(): string { return self::CONTRACT_VERSION; }
@@ -74,10 +95,13 @@ final class HolidayCalendarSnapshot {
     public function publicHolidayDates(): array { return $this->publicHolidayDates; }
     /** @return list<array{startDate:string,endDate:string,name:string}> */
     public function publicHolidays(): array { return $this->publicHolidays; }
+
+    /** @return list<array{startDate:string,endDate:string,name:string}> */
+    public function schoolHolidays(): array { return $this->schoolHolidays; }
     public function fetchedAt(): ?string { return $this->fetchedAt; }
     public function isUsable(): bool { return $this->cacheStatus !== 'unavailable'; }
 
-    /** @return array{contractVersion:string,year:int,timezone:string,cacheStatus:string,publicHolidayDates:list<string>,publicHolidays:list<array{startDate:string,endDate:string,name:string}>,fetchedAt:?string} */
+    /** @return array{contractVersion:string,year:int,timezone:string,cacheStatus:string,publicHolidayDates:list<string>,publicHolidays:list<array{startDate:string,endDate:string,name:string}>,schoolHolidays:list<array{startDate:string,endDate:string,name:string}>,fetchedAt:?string} */
     public function toArray(): array {
         return [
             'contractVersion' => self::CONTRACT_VERSION,
@@ -86,6 +110,7 @@ final class HolidayCalendarSnapshot {
             'cacheStatus' => $this->cacheStatus,
             'publicHolidayDates' => $this->publicHolidayDates,
             'publicHolidays' => $this->publicHolidays,
+            'schoolHolidays' => $this->schoolHolidays,
             'fetchedAt' => $this->fetchedAt,
         ];
     }
