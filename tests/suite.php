@@ -11,6 +11,7 @@ $tests =
     __DIR__ . '/Contract/PhpCoverageRunnerContractTest.php',
     __DIR__ . '/Contract/PublicApiV1ContractTest.php',
     __DIR__ . '/Contract/AdminRouteSecurityContractTest.php',
+    __DIR__ . '/Organization/OrganizationDefinitionContractTest.php',
     __DIR__ . '/Service/OrganizationRuntimeTest.php',
     __DIR__ . '/Service/CalendarRuntimeTest.php',
     __DIR__ . '/Service/OrganizationAdminServiceTest.php',
