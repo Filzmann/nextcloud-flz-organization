@@ -42,6 +42,18 @@ jobs:
           repository: Filzmann/nextcloud-localbase
           ref: ${{ steps.localbase-ref.outputs.ref }}
           path: localbase
+      - name: Kapazitaet-Vertragspartner für Listener-Tests auschecken
+        uses: actions/checkout@v7
+        with:
+          repository: Filzmann/nextcloud-flz_kapazitaet
+          ref: 17972e091f56b8d5c69c39bb245aabd62cee7dfc
+          path: flz_kapazitaet
+      - name: Planer-Vertragspartner für Listener-Tests auschecken
+        uses: actions/checkout@v7
+        with:
+          repository: Filzmann/nextcloud-flzplaner
+          ref: 7b20245ee9673c59d6eacc33044c343753791b9a
+          path: flzplaner
       - name: PHP einrichten
         uses: shivammathur/setup-php@v2
         with:
