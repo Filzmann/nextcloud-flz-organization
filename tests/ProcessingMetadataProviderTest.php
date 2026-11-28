@@ -33,6 +33,36 @@ namespace {
         throw new RuntimeException('Der Processing-Katalog enthält personenbezogene Laufzeitdaten.');
     }
 
+    $missing = new FlzOrganizationProcessingMetadataProvider('/nicht/vorhanden.json');
+    try {
+        $missing->catalog();
+        throw new RuntimeException('Ein fehlender Katalog muss eine DomainException werfen.');
+    } catch (DomainException $e) {
+        if (!str_contains($e->getMessage(), 'nicht verfügbar')) throw $e;
+    }
+
+    $tmpInvalid = tempnam(sys_get_temp_dir(), 'catalog');
+    file_put_contents($tmpInvalid, '{ungültig');
+    try {
+        (new FlzOrganizationProcessingMetadataProvider($tmpInvalid))->catalog();
+        throw new RuntimeException('Ungültiges JSON muss eine DomainException werfen.');
+    } catch (DomainException $e) {
+        if (!str_contains($e->getMessage(), 'ungültig')) throw $e;
+    } finally {
+        unlink($tmpInvalid);
+    }
+
+    $tmpScalar = tempnam(sys_get_temp_dir(), 'catalog');
+    file_put_contents($tmpScalar, '"nur text"');
+    try {
+        (new FlzOrganizationProcessingMetadataProvider($tmpScalar))->catalog();
+        throw new RuntimeException('Eine nicht-objektartige Wurzel muss eine DomainException werfen.');
+    } catch (DomainException $e) {
+        if (!str_contains($e->getMessage(), 'ungültig')) throw $e;
+    } finally {
+        unlink($tmpScalar);
+    }
+
     $registration = new RegisterProcessingMetadataProvidersEvent();
     $listener = new FlzOrganizationProcessingMetadataProviderListener($provider);
     $listener->handle(new Event());

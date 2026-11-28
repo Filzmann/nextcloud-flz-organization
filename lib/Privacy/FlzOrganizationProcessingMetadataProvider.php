@@ -12,12 +12,14 @@ use OCA\FlzDataProtection\PublicApi\V1\ProcessingMetadataProvider;
 use OCA\FlzDataProtection\PublicApi\V1\ProcessingMetadataProviderDescriptor;
 
 final class FlzOrganizationProcessingMetadataProvider implements ProcessingMetadataProvider {
+    public function __construct(private ?string $catalogFile = null) {}
+
     public function descriptor(): ProcessingMetadataProviderDescriptor {
         return new ProcessingMetadataProviderDescriptor('flz_organization', 'Filzmann Organisation', '1.0');
     }
 
     public function catalog(): ProcessingMetadataCatalog {
-        $path = dirname(__DIR__, 2) . '/resources/privacy-processing.json';
+        $path = $this->catalogFile ?? dirname(__DIR__, 2) . '/resources/privacy-processing.json';
         if (!is_file($path)) {
             throw new DomainException('Der Verarbeitungsmetadaten-Katalog ist nicht verfügbar.');
         }
